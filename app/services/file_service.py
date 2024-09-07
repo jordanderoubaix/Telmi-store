@@ -110,7 +110,7 @@ def collect_data():
                 "small": image_small,
                 "medium": image_medium
             },
-            "download": f"{image_path}/{archive_name}.zip",
+            "download": f"{settings.LIBRARY_LINK}/{archive_name}.zip",
             "awards": metadata.get("awards", ["default award"]) if metadata_file.exists() else story.get("awards", ["default award"]),
             "created_at": metadata.get("created_at", datetime.utcnow().isoformat()) if metadata_file.exists() else story.get("created_at", datetime.utcnow().isoformat()),
             "updated_at": metadata.get("updated_at", datetime.utcnow().isoformat()) if metadata_file.exists() else story.get("updated_at", datetime.utcnow().isoformat())
