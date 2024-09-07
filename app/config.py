@@ -11,6 +11,6 @@ class Settings():
     BANNER_LINK: str = os.getenv("BANNER_LINK", "https://monurl.ca/lunii.creations/")
     BANNER_BACKGROUND: str = os.getenv("BANNER_BACKGROUND", "#016673")
     LIBRARY_LINK: str = os.getenv("LIBRARY_LINK", "http://link.to.library/telmilib")
-
+    API_KEY: str = os.getenv("API_KEY", "defaultapikey")
 
 settings = Settings()
