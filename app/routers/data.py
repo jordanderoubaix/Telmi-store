@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
-from ..services.file_service import collect_data
-from ..config import settings
+from services.file_service import collect_data
+from config import settings
 
 router = APIRouter()
 
