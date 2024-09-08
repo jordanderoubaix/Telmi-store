@@ -7,7 +7,7 @@ import glob
 import zipfile
 import os
 import re
-from ..config import settings
+from config import settings
 
 
 # get the log level from the environment variable, default to INFO
