@@ -10,8 +10,10 @@ import re
 from unidecode import unidecode
 from config import settings
 
+
 log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
 logging.basicConfig(level=getattr(logging, log_level, logging.INFO))
+
 
 def clean_filename(filename: str) -> str:
     filename = unidecode(filename)
@@ -109,12 +111,17 @@ def collect_data():
 
         # If age is 0, extract it from the current directory name
         if age == 0:
-            match = re.search(r'^(\d+)__', title)
+            match = re.search(r'^(\d+)__', clean_name)
             if match:
                 age = int(match.group(1))
             else:
                 logging.error(f"Could not extract age from directory name {clean_name}")
-                age = 0
+
+        # Extract age from the title if it exists and update title without age
+        title_match = re.search(r'^(\d+)\+\](.+)', title)
+        if title_match:
+            age = int(title_match.group(1))
+            title = title_match.group(2).strip()
 
         data_item = {
             "age": age,
