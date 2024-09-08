@@ -18,5 +18,4 @@ class Settings():
     if API_KEY is None:
         API_KEY = secrets.token_urlsafe(32)
 
-
 settings = Settings()
