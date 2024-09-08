@@ -7,12 +7,16 @@ import glob
 import zipfile
 import os
 import re
+from unidecode import unidecode
 from config import settings
 
-
-# get the log level from the environment variable, default to INFO
 log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
 logging.basicConfig(level=getattr(logging, log_level, logging.INFO))
+
+def clean_filename(filename: str) -> str:
+    filename = unidecode(filename)
+    filename = re.sub(r'[^a-zA-Z0-9_-]', '_', filename)
+    return filename
 
 def collect_data():
     data_list = []
@@ -38,9 +42,19 @@ def collect_data():
     destination_parent_path.mkdir(parents=True, exist_ok=True)
 
     for zip_file in zip_files:
-        # Name of the destination directory based on the archive name
-        archive_name = Path(zip_file).stem
-        destination_path = destination_parent_path / archive_name
+        # Clean the filename
+        original_name = Path(zip_file).stem
+        clean_name = clean_filename(original_name)
+        
+        # Renommer le fichier ZIP s'il contient des caractères spéciaux
+        if clean_name != original_name:
+            clean_zip_file = shared_path / f"{clean_name}.zip"
+            os.rename(zip_file, clean_zip_file)
+            zip_file = clean_zip_file
+            logging.info(f"Renamed {original_name}.zip to {clean_name}.zip")
+
+        # Name of the destination directory based on the cleaned archive name
+        destination_path = destination_parent_path / clean_name
 
         # Check if the destination directory already exists
         if not destination_path.exists():
@@ -76,16 +90,16 @@ def collect_data():
                 title = metadata.get("title", "Titre par défaut")
                 description = metadata.get("description", "Description par défaut")
                 version = metadata.get("version", 1)
-                image_small = f"{image_path}/{archive_name}/title.png"
-                image_medium = f"{image_path}/{archive_name}/cover.png"
+                image_small = f"{image_path}/{clean_name}/title.png"
+                image_medium = f"{image_path}/{clean_name}/cover.png"
         elif story_file.exists():
             with open(story_file, 'r', encoding='utf-8') as f:
                 story = json.load(f)
                 title = story.get("title", "Titre par défaut")
                 description = story.get("description", "Description par défaut")
                 version = story.get("version", 1)
-                image_small = f"{image_path}/{archive_name}/thumbnail.png"
-                image_medium = f"{image_path}/{archive_name}/thumbnail.png"
+                image_small = f"{image_path}/{clean_name}/thumbnail.png"
+                image_medium = f"{image_path}/{clean_name}/thumbnail.png"
         else:
             logging.error(f"Neither metadata.json nor story.json found in {destination_path}")
             continue
@@ -95,12 +109,11 @@ def collect_data():
 
         # If age is 0, extract it from the current directory name
         if age == 0:
-            match = re.search(r'(\d+)\+\]', archive_name)
+            match = re.search(r'^(\d+)__', clean_name)
             if match:
                 age = int(match.group(1))
             else:
-                logging.error(f"Could not extract age from directory name {archive_name}")
-
+                logging.error(f"Could not extract age from directory name {clean_name}")
 
         data_item = {
             "age": age,
@@ -110,7 +123,7 @@ def collect_data():
                 "small": image_small,
                 "medium": image_medium
             },
-            "download": f"{settings.LIBRARY_LINK}/{archive_name}.zip",
+            "download": f"{settings.LIBRARY_LINK}/{clean_name}.zip",
             "awards": metadata.get("awards", ["default award"]) if metadata_file.exists() else story.get("awards", ["default award"]),
             "created_at": metadata.get("created_at", datetime.utcnow().isoformat()) if metadata_file.exists() else story.get("created_at", datetime.utcnow().isoformat()),
             "updated_at": metadata.get("updated_at", datetime.utcnow().isoformat()) if metadata_file.exists() else story.get("updated_at", datetime.utcnow().isoformat())
