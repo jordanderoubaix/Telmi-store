@@ -37,7 +37,7 @@ jobs:
 
     - name: Push Docker image
       run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/my-app:${{ github.sha }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/custom-telmi-store:${{ github.sha }}
 
     - name: Log out from Docker Hub
       run: docker logout
