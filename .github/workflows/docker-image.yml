@@ -31,7 +31,11 @@ jobs:
 
     - name: Tag Docker image as latest
       run: |
-        docker tag ${{ secrets.DOCKER_USERNAME }}/custom-telmi-store:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/my-app:latest
+        docker tag ${{ secrets.DOCKER_USERNAME }}/custom-telmi-store:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/custom-telmi-store:latest
+
+    - name: Verify Docker images
+      run: |
+        docker images
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
