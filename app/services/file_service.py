@@ -109,11 +109,12 @@ def collect_data():
 
         # If age is 0, extract it from the current directory name
         if age == 0:
-            match = re.search(r'^(\d+)__', clean_name)
+            match = re.search(r'^(\d+)__', title)
             if match:
                 age = int(match.group(1))
             else:
                 logging.error(f"Could not extract age from directory name {clean_name}")
+                age = 0
 
         data_item = {
             "age": age,
