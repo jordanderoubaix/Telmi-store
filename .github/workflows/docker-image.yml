@@ -27,11 +27,11 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/custom-telmi-store:${{ github.sha }} .
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/git bra-telmi-store:${{ github.sha }} .
 
     - name: Tag Docker image as latest
       run: |
-        docker tag ${{ secrets.DOCKER_USERNAME }}/custom-telmi-store:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/custom-telmi-store:latest
+        docker tag ${{ secrets.DOCKER_USERNAME }}/telmi-store:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/telmi-store:latest
 
     - name: Verify Docker images
       run: |
@@ -45,8 +45,8 @@ jobs:
 
     - name: Push Docker images
       run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/custom-telmi-store:${{ github.sha }}
-        docker push ${{ secrets.DOCKER_USERNAME }}/custom-telmi-store:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/telmi-store:${{ github.sha }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/telmi-store:latest
 
     - name: Log out from Docker Hub
       run: docker logout

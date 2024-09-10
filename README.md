@@ -32,6 +32,8 @@ docker run -d -p 80:8888 \
   -e BANNER_IMAGE="http://new.banner.image" \
   -e BANNER_LINK="http://new.banner.link" \
   -e BANNER_BACKGROUND="#123456" \
+  -e API_KEY="123456" \
+  -e LIBRARY_LINK="http://urlToDownloadStories.com" \
   -e LOG_LEVEL="DEBUG" \
   -v /MountedVolumeOnHost/Stories:/mnt/nfs/telmiLibrary \
   jordanderoubaix/telmi-store:latest
