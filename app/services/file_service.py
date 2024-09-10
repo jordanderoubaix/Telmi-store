@@ -20,12 +20,13 @@ def clean_filename(filename: str) -> str:
     filename = re.sub(r'[^a-zA-Z0-9_-]', '_', filename)
     return filename
 
-def collect_data():
+def collect_data(base_url: str):
     data_list = []
     shared_path = Path(settings.SHARED_DIRECTORY_PATH)
     image_path = settings.LIBRARY_LINK + '/data'
     
     logging.info(f"Shared directory path: {shared_path}")
+    logging.info(f"base url: {base_url}")
     
     if not shared_path.exists():
         logging.error(f"Shared directory path does not exist: {shared_path}")
@@ -131,7 +132,7 @@ def collect_data():
                 "small": image_small,
                 "medium": image_medium
             },
-            "download": f"{settings.LIBRARY_LINK}/{clean_name}.zip",
+            "download": f"{base_url}/file/download?api_key={settings.API_KEY}&filename={clean_name}.zip",
             "awards": metadata.get("awards", ["default award"]) if metadata_file.exists() else story.get("awards", ["default award"]),
             "created_at": metadata.get("created_at", datetime.utcnow().isoformat()) if metadata_file.exists() else story.get("created_at", datetime.utcnow().isoformat()),
             "updated_at": metadata.get("updated_at", datetime.utcnow().isoformat()) if metadata_file.exists() else story.get("updated_at", datetime.utcnow().isoformat())
