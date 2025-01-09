@@ -37,7 +37,7 @@ jobs:
 
     - name: Build and Push Docker image with Buildx
       run: |
-        docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64 -t ${{ secrets.DOCKER_USERNAME }}/telmi-store:v${{ env.VERSION }} --push .
+        docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64 -t ${{ secrets.DOCKER_USERNAME }}/telmi-store:v${{ env.VERSION }} --push --load .
 
     - name: Tag Docker image as latest
       run: |
