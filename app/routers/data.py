@@ -4,12 +4,16 @@ from config import settings
 
 router = APIRouter()
 
-@router.get("/store")
+@router.get("/store", name="get_data")
 def get_data(request: Request, api_key: str = Query(None)):
     if api_key is None:
         raise HTTPException(status_code=400, detail="API Key is required")
     if api_key != settings.API_KEY:
         raise HTTPException(status_code=403, detail="Invalid API Key")
-    base_url = str(request.url_for("get_data", _scheme=settings.REQUEST_SCHEME)).replace("/store", "")
+    
+    scheme = settings.REQUEST_SCHEME
+    host = request.headers.get("host")
+    base_url = f"{scheme}://{host}"
+    
     data = collect_data(base_url)
     return data
