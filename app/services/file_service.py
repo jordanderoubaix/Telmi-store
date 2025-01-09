@@ -23,7 +23,6 @@ def clean_filename(filename: str) -> str:
 def collect_data(base_url: str):
     data_list = []
     shared_path = Path(settings.SHARED_DIRECTORY_PATH)
-    image_path = settings.LIBRARY_LINK + '/data'
     
     logging.info(f"Shared directory path: {shared_path}")
     logging.info(f"base url: {base_url}")
@@ -93,16 +92,16 @@ def collect_data(base_url: str):
                 title = metadata.get("title", "Titre par défaut")
                 description = metadata.get("description", "Description par défaut")
                 version = metadata.get("version", 1)
-                image_small = f"{image_path}/{clean_name}/title.png"
-                image_medium = f"{image_path}/{clean_name}/cover.png"
+                image_small = f"{clean_name}/title.png"
+                image_medium = f"{clean_name}/cover.png"
         elif story_file.exists():
             with open(story_file, 'r', encoding='utf-8') as f:
                 story = json.load(f)
                 title = story.get("title", "Titre par défaut")
                 description = story.get("description", "Description par défaut")
                 version = story.get("version", 1)
-                image_small = f"{image_path}/{clean_name}/thumbnail.png"
-                image_medium = f"{image_path}/{clean_name}/thumbnail.png"
+                image_small = f"{clean_name}/thumbnail.png"
+                image_medium = f"{clean_name}/thumbnail.png"
         else:
             logging.error(f"Neither metadata.json nor story.json found in {destination_path}")
             continue
@@ -129,11 +128,11 @@ def collect_data(base_url: str):
             "title": title,
             "description": description,
             "thumbs": {
-                "small": image_small,
-                "medium": image_medium
+                "small": f"{base_url}/file/image?filename={image_small}",
+                "medium": f"{base_url}/file/image?filename={image_medium}"
             },
             "download": f"{base_url}/file/download?api_key={settings.API_KEY}&filename={clean_name}.zip",
-            "awards": metadata.get("awards", ["default award"]) if metadata_file.exists() else story.get("awards", ["default award"]),
+            "awards": metadata.get("awards", []) if metadata_file.exists() else story.get("awards", []),
             "created_at": metadata.get("created_at", datetime.utcnow().isoformat()) if metadata_file.exists() else story.get("created_at", datetime.utcnow().isoformat()),
             "updated_at": metadata.get("updated_at", datetime.utcnow().isoformat()) if metadata_file.exists() else story.get("updated_at", datetime.utcnow().isoformat())
         }

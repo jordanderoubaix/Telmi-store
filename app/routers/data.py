@@ -10,6 +10,6 @@ def get_data(request: Request, api_key: str = Query(None)):
         raise HTTPException(status_code=400, detail="API Key is required")
     if api_key != settings.API_KEY:
         raise HTTPException(status_code=403, detail="Invalid API Key")
-    base_url = str(request.url_for("get_data")).replace("/store", "")
+    base_url = str(request.url_for("get_data", _scheme=settings.REQUEST_SCHEME)).replace("/store", "")
     data = collect_data(base_url)
     return data
