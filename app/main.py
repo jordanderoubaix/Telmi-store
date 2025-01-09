@@ -34,3 +34,16 @@ def download_file(filename: str, api_key: str = Query(None)):
     logging.info("file_path : ", file_path)
 
     return FileResponse(path=file_path, filename=filename, media_type="multipart/form-data")
+
+@app.get("/file/image")
+def image_file(filename: str):
+    if filename is None:
+        raise HTTPException(status_code=400, detail="Filename is required")
+
+    logging.info(f"Image file: {filename}")
+    shared_path = Path(settings.SHARED_DIRECTORY_PATH)
+    file_path = shared_path / 'data' / filename
+
+    logging.info("file_path : ", file_path)
+
+    return FileResponse(path=file_path, filename=filename, media_type="image/png")
